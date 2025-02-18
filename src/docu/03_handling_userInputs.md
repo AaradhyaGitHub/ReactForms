@@ -112,4 +112,3 @@ function LoginForm() {
 - When handling **file inputs** or **third-party UI libraries** that require direct DOM interaction.
 
 In most cases, **controlled components using state** are preferred over `useRef`.
-
