@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Input from "./Input.jsx";
+import { isEmail, hasMinLength, isNotEmpty } from "../util/validation.js";
 export default function Login() {
   // const [enteredEmail, setEnteredEmail] = useState("");
   // const [enteredPassword, setEnteredPassword] = useState("");
@@ -14,10 +15,14 @@ export default function Login() {
     password: false
   });
 
-  const emailIsInvalid = didEdit.email && !enteredValues.email.includes("@");
-  const passwordIsInvalid = didEdit.password && !enteredValues.password.trim().length < 6;
+  const emailIsInvalid =
+    didEdit.email &&
+    !isEmail(enteredValues.email) &&
+    !isNotEmpty(enteredValues.email);
 
-
+  const passwordIsInvalid =
+    didEdit.password && !hasMinLength(enteredValues.password, 6);
+    
   function handleSubmit(event) {
     event.preventDefault();
     console.log("Form Submitted!");
@@ -58,7 +63,7 @@ export default function Login() {
           onBlur={() => handleInputBlur("email")}
           onChange={(event) => handleInputChange("email", event.target.value)}
           value={enteredValues.email}
-          error = {emailIsInvalid && 'Please Enter a Valid Email'}
+          error={emailIsInvalid && "Please Enter a Valid Email"}
         />
 
         <Input
@@ -71,9 +76,8 @@ export default function Login() {
           }
           onBlur={() => handleInputBlur("password")}
           value={enteredValues.password}
-          error = {passwordIsInvalid && 'Please Enter a Valid Password'}
+          error={passwordIsInvalid && "Please Enter a Valid Password"}
         />
-
       </div>
 
       <p className="form-actions">
