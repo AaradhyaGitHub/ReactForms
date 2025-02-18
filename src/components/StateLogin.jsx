@@ -6,20 +6,23 @@ export default function Login() {
   const {
     value: emailValue,
     handleInputChange: handleEmailChange,
-    handleInputBlur: handleEmailBlur
-  } = useInput("");
+    handleInputBlur: handleEmailBlur,
+    hasError: emailHasError
+  } = useInput("", (value) => isEmail(value) && isNotEmpty(value));
 
-  const emailIsInvalid =
-    didEdit.email &&
-    !isEmail(enteredValues.email) &&
-    !isNotEmpty(enteredValues.email);
-
-  const passwordIsInvalid =
-    didEdit.password && !hasMinLength(enteredValues.password, 6);
+  const {
+    value: passwordValue,
+    handleInputChange: handlePasswordChange,
+    handleInputBlur: handlePasswordBlur,
+    hasError: passwordHasError
+  } = useInput("", (value) => hasMinLength(value, 6));
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log("Form Submitted!");
+    if(emailHasError || passwordHasError){
+      return;
+    }
+    console.log(emailValue, passwordValue)
   }
 
   return (
@@ -35,7 +38,7 @@ export default function Login() {
           onBlur={handleEmailBlur}
           onChange={handleEmailChange}
           value={emailValue}
-          error={emailIsInvalid && "Please Enter a Valid Email"}
+          error={emailHasError && "Please Enter a Valid Email"}
         />
 
         <Input
@@ -43,12 +46,10 @@ export default function Login() {
           id="password"
           type="password"
           name="password"
-          onChange={(event) =>
-            handleInputChange("password", event.target.value)
-          }
-          onBlur={() => handleInputBlur("password")}
-          value={enteredValues.password}
-          error={passwordIsInvalid && "Please Enter a Valid Password"}
+          onChange={handlePasswordChange}
+          onBlur={handlePasswordBlur}
+          value={passwordValue}
+          error={passwordHasError && "Please Enter a Valid Password"}
         />
       </div>
 
