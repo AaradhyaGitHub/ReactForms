@@ -197,3 +197,94 @@ Example: `required` prop on all input fields or `minLength` on passwords
 ```jsx
     <select id="role" name="role" required>
 ```
+
+# **Approach#5: COMBINING EVERYTHING!**
+
+## **Ensuring that the Two Passwords Match**
+
+One of the critical parts of a form validation system is ensuring that the user enters matching passwords. To handle this, we introduce a state variable:
+
+```jsx
+const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
+```
+
+### **Breaking It Down:**
+1. **State Initialization:**
+   - We use `useState` to create a boolean state variable called `passwordsAreNotEqual`.
+   - Initially, it is set to `false`, assuming the passwords match until proven otherwise.
+
+2. **Password Matching Logic:**
+   - When the user submits the form or updates the password fields, we compare the `password` and `confirm-password` fields.
+   - If they do not match, we update the state to `true`, indicating an error.
+   - The `return` statement ensures that the function execution stops here if the passwords don't match, preventing further processing.
+
+```jsx
+if (data.password !== data["confirm-password"]) {
+  setPasswordsAreNotEqual(true);
+  return;
+}
+```
+
+### **Main Logic:**
+- `data.password` and `data["confirm-password"]` are extracted from the form inputs.
+- If they do not match, `setPasswordsAreNotEqual(true)` triggers a state update, which can later be used to display an error message dynamically.
+- The `return` statement ensures that no further validation or form submission happens if the passwords are incorrect.
+
+## **Dynamic Display of Input Fields and Errors**
+
+We need to handle user input dynamically while providing real-time feedback. The following snippet demonstrates an approach for handling email input validation:
+
+```jsx
+<div className="control-row">
+  <div className="control no-margin">
+    <label htmlFor="email">Email</label>
+    <input
+      id="email"
+      type="email"
+      name="email"
+      onBlur={() => handleInputBlur("email")}
+      onChange={(event) => handleInputChange("email", event.target.value)}
+      value={enteredValues.email}
+    />
+    <div className="control-error">
+      {emailIsInvalid && <p>Please enter a valid email address</p>}
+    </div>
+  </div>
+</div>
+```
+
+### **Detailed Breakdown:**
+
+#### **1. Handling Input Events:**
+- **`onBlur={() => handleInputBlur("email")}`**
+  - Calls `handleInputBlur("email")` when the user leaves the email input field.
+  - This is useful for triggering validation checks after user interaction.
+- **`onChange={(event) => handleInputChange("email", event.target.value)}`**
+  - Updates the state as the user types.
+  - Uses `handleInputChange` to process the entered value.
+  
+#### **2. Managing Input State:**
+- **`value={enteredValues.email}`**
+  - Ensures that the input field is controlled, meaning its value is always derived from the component state.
+
+#### **3. Displaying Validation Messages:**
+- **Error Handling:**
+  - If `emailIsInvalid` is `true`, the error message `<p>Please enter a valid email address</p>` is displayed inside `div.control-error`.
+  - This ensures real-time validation feedback to the user.
+
+### **Main Logic Recap:**
+- The email input dynamically updates as the user types (`onChange`).
+- When the user leaves the field (`onBlur`), additional validation can be triggered.
+- If validation fails, an error message is displayed.
+- The approach ensures a smooth and responsive user experience.
+
+---
+
+### **Conclusion**
+By combining password validation and dynamic input handling, we create a robust form validation system.
+- The password fields ensure both values match before allowing submission.
+- The email field dynamically tracks user input and provides real-time feedback on validity.
+
+This approach enhances usability, improves error handling, and provides a seamless form experience.
+
+
