@@ -106,33 +106,67 @@ By combining these strategies, we create an intuitive and frustration-free form 
 
 ---
 
-## **Next Step: Validating upon Form Submission**
+# **Next Step: Validating upon Form Submission**
 
-While this method works great for live validation, sometimes we only want to validate **when the user submits the form**.
+## **Why Validate on Submission?**
 
-- For this example, we'll revert back to a useRef implementation of extracting user information
-- when using useRef, we cannot validate on every single key stroke
-- So if we stick with Refs, we can only validate upon form submission.
+While live validation provides a great user experience by giving instant feedback, there are situations where validation should only happen when the user submits the form. This ensures that the submitted data meets all requirements before being processed.
 
-We start with a state:
-const [emailIsInvalid, setEmailIsInvalild] = useState(false);
+## **Implementation Using `useRef`**
 
-We set our constants and if checks:
-const emailIsValid= enteredEmail.includes('@')
-if (!emailIsValid){
-setEmailIsInvalild(true)
-return; // we stop the code. What if HTTP request would have been sent with invalid data
+For this approach, we will revert to using `useRef` to extract user input. When using `useRef`, we cannot validate on every keystroke since refs do not cause re-renders when their values change. Instead, we can only validate when the form is submitted.
+
+### **Defining State for Validation**
+
+We introduce a state to track if the email input is invalid:
+
+```javascript
+const [emailIsInvalid, setEmailIsInvalid] = useState(false);
+```
+
+### **Checking the Validity of the Email**
+
+We define a constant to determine whether the entered email is valid:
+
+```javascript
+const emailIsValid = enteredEmail.includes('@');
+```
+
+If the email is invalid, we update the state and prevent further execution (such as sending an HTTP request with invalid data):
+
+```javascript
+if (!emailIsValid) {
+  setEmailIsInvalid(true);
+  return; // Stop further execution to prevent invalid submissions
 }
+```
 
-Now, we can display it dynamically:
+### **Dynamically Displaying the Validation Message**
+
+Now, we can conditionally display an error message if the email is invalid:
+
+```jsx
 <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
-          <input id="email" type="email" name="email" ref={email} />
-          <div className="control-error">
-            {
-              emailIsInvalid && 
-              <p>Please enter a valid email address</p>
-            }
-          </div>
+  <div className="control no-margin">
+    <label htmlFor="email">Email</label>
+    <input id="email" type="email" name="email" ref={email} />
+    <div className="control-error">
+      {emailIsInvalid && <p>Please enter a valid email address</p>}
+    </div>
+  </div>
 </div>
+```
+
+## **Why Submission Validation is Crucial**
+
+While live validation (on each input change) improves user experience, **validation upon form submission is essential** to ensure data integrity. Operations depending on form data should never receive incorrect or incomplete information. Here’s why:
+
+- **Ensuring Data Completeness**: Without final validation on submission, users could bypass input checks and submit invalid or empty fields.
+- **Preventing Incorrect Data from Propagating**: If data is being sent to an API or database, invalid data could cause errors or corrupt stored information.
+- **Security Considerations**: Even if client-side validation is present, always assume that data can be tampered with. Server-side validation is still necessary.
+
+### **Issue with the Second Approach**
+
+While the second approach (validating on keystrokes) is elegant, it **does not prevent users from submitting empty fields**. Without submission validation, users can bypass individual checks and send incomplete or incorrect data.
+
+By ensuring that form validation happens **both live and upon submission**, we create a robust and user-friendly experience while maintaining data integrity.
