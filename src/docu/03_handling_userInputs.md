@@ -112,3 +112,93 @@ function LoginForm() {
 - When handling **file inputs** or **third-party UI libraries** that require direct DOM interaction.
 
 In most cases, **controlled components using state** are preferred over `useRef`.
+
+--- 
+
+# **Quickly on Resetting Forms**
+
+## **1. Resetting Forms with Button Types**
+
+In React, buttons can be assigned different `type` attributes:
+- **`type="button"`** → Regular button (no default behavior)
+- **`type="submit"`** → Triggers form submission
+- **`type="reset"`** → Resets the form fields to their initial values
+
+If we want to reset a form without using state management, we can simply use:
+
+```jsx
+<button type="reset">Reset Form</button>
+```
+
+This will automatically reset all input fields to their default values.
+
+---
+
+## **2. Resetting Forms with State**
+
+When using React state to control form inputs, resetting the form requires manually updating the state:
+
+```jsx
+const [formData, setFormData] = useState({ email: "", password: "" });
+
+function handleReset() {
+    setFormData({ email: "", password: "" });
+}
+
+<button type="button" onClick={handleReset}>Reset Form</button>
+```
+
+This approach ensures the form fields are cleared while keeping React’s declarative paradigm.
+
+---
+
+## **3. Resetting Forms with Refs (Not Recommended)**
+
+Using refs, each input field would have to be reset individually:
+
+```jsx
+const emailRef = useRef();
+const passwordRef = useRef();
+
+function handleReset() {
+    emailRef.current.value = "";
+    passwordRef.current.value = "";
+}
+```
+
+This approach is **not recommended** because it is **imperative** rather than declarative, making the code harder to maintain.
+
+---
+
+## **4. Using `event.target.reset()` (Recommended for Forms)**
+
+If handling a form submission event, we can use the built-in `.reset()` method on the form element itself:
+
+```jsx
+function handleSubmit(event) {
+    event.preventDefault();
+    console.log("Form submitted!");
+    event.target.reset();
+}
+
+<form onSubmit={handleSubmit}>
+    <input type="text" name="email" />
+    <button type="submit">Submit</button>
+    <button type="reset">Reset</button>
+</form>
+```
+
+### **Why This Works Well?**
+- The event's target (`event.target`) refers to the **form element**.
+- Calling `event.target.reset()` resets all form fields to their default values.
+- While this is an **imperative** approach, it is concise and built-in.
+
+---
+
+## **Conclusion**
+- Use **`type="reset"`** for simple form resets.
+- Use **state-based resets** for controlled components.
+- Avoid **resetting refs manually** as it is redundant.
+- Use **`event.target.reset()`** when handling form submissions efficiently.
+
+This ensures clean, maintainable, and idiomatic React code when resetting forms.
