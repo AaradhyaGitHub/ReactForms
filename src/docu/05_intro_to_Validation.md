@@ -106,7 +106,7 @@ By combining these strategies, we create an intuitive and frustration-free form 
 
 ---
 
-# **Next Step: Validating upon Form Submission**
+# **Approach#3 Validating upon Form Submission**
 
 ## **Why Validate on Submission?**
 
@@ -129,7 +129,7 @@ const [emailIsInvalid, setEmailIsInvalid] = useState(false);
 We define a constant to determine whether the entered email is valid:
 
 ```javascript
-const emailIsValid = enteredEmail.includes('@');
+const emailIsValid = enteredEmail.includes("@");
 ```
 
 If the email is invalid, we update the state and prevent further execution (such as sending an HTTP request with invalid data):
@@ -170,3 +170,30 @@ While live validation (on each input change) improves user experience, **validat
 While the second approach (validating on keystrokes) is elegant, it **does not prevent users from submitting empty fields**. Without submission validation, users can bypass individual checks and send incomplete or incorrect data.
 
 By ensuring that form validation happens **both live and upon submission**, we create a robust and user-friendly experience while maintaining data integrity.
+
+---
+
+# **Approach#4 Validating via Built-in Validation Prop **
+
+Example: `required` prop on all input fields or `minLength` on passwords
+
+## required exammple on **Email
+```jsx
+    <input id="email" type="email" name="email" required />
+```
+
+## required and minLength exammple on **Password
+```jsx
+    <input
+        id="password"
+        type="password"
+        name="password"
+        required
+        minLength={6}
+    />
+```
+
+## required exammple on **Select
+```jsx
+    <select id="role" name="role" required>
+```
